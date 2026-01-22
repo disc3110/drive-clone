@@ -5,6 +5,8 @@ const session = require('express-session');
 const passport = require('passport');
 const PrismaSessionStore = require('@quixo3/prisma-session-store').PrismaSessionStore;
 const prisma = require('./config/prismaClient');
+const configurePassport = require('./config/passport');
+
 require('dotenv').config();
 
 // routes
@@ -37,7 +39,8 @@ app.use(
   })
 );
 
-// initialize passport
+// configure passport
+configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
