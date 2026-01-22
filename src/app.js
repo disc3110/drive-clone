@@ -11,6 +11,7 @@ require('dotenv').config();
 
 // routes
 const indexRouter = require('./routers/indexRouter');
+const authRouter = require('./routers/authRouter');
 
 const app = express();
 
@@ -46,6 +47,7 @@ app.use(passport.session());
 
 // routes
 app.use('/', indexRouter);
+app.use('/', authRouter);
 
 //  404 handler
 app.use((req, res, next) => {
