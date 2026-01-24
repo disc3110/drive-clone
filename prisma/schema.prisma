@@ -11,16 +11,31 @@ datasource db {
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
-  password  String   // bcrypt hash
+  password  String
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  files     File[]   // 👈 relation
 }
 
-// Sessions for @quixo3/prisma-session-store
 model Session {
   id        String   @id
   sid       String   @unique
   data      String
   expiresAt DateTime
+}
+
+model File {
+  id           String   @id @default(cuid())
+  name         String?  // user-provided
+  originalName String   // original filename from upload
+  filename     String   // stored filename on disk
+  mimeType     String
+  size         Int
+  path         String
+  createdAt    DateTime @default(now())
+
+  owner        User     @relation(fields: [ownerId], references: [id])
+  ownerId      String
 }

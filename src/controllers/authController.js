@@ -1,18 +1,20 @@
 const bcrypt = require('bcryptjs');
 const prisma = require('../config/prismaClient');
+const { validationResult } = require("express-validator");
 
 const getRegister = (req, res) => {
-  res.render('register', { title: 'Sign up', user: req.user || null });
+  res.render('register', { title: 'Sign up', errors: null, user: req.user || null });
 };
 
 const postRegister = async (req, res) => {
+  const errors = validationResult(req);
   const { name, email, password, confirmPassword } = req.body;
 
-  if (!email || !password || password !== confirmPassword) {
+  if (!errors.isEmpty()) {
     return res.status(400).render('register', {
       title: 'Sign up',
       user: null,
-      error: 'Please fill all fields and make sure passwords match.',
+      errors: errors.array(),
     });
   }
 
@@ -22,7 +24,7 @@ const postRegister = async (req, res) => {
       return res.status(400).render('register', {
         title: 'Sign up',
         user: null,
-        error: 'Email is already registered.',
+        errors: 'Email is already registered.',
       });
     }
 
@@ -35,14 +37,14 @@ const postRegister = async (req, res) => {
         name: name || null,
       },
     });
-    
+
     res.redirect('/login');
   } catch (err) {
     console.error(err);
     res.status(500).render('register', {
       title: 'Sign up',
       user: null,
-      error: 'Something went wrong. Please try again.',
+      errors: 'Something went wrong. Please try again.',
     });
   }
 };

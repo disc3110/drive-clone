@@ -33,6 +33,16 @@
 
     <main class="max-w-4xl mx-auto px-4 py-10">
       <h1 class="text-3xl font-bold mb-2">Welcome<% if (user && user.name) { %>, <%= user.name %><% } %>!</h1>
+      <% if (user) { %>
+        <div class="mt-6">
+          <a
+            href="/upload"
+            class="inline-flex items-center rounded-md bg-indigo-500 hover:bg-indigo-400 px-4 py-2 text-sm font-medium"
+          >
+            Upload a file
+          </a>
+        </div>
+      <% } %>
       <p class="text-slate-300">
         Once we finish the project,
         you will be able to create folders and upload files here.
