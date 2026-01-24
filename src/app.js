@@ -13,6 +13,7 @@ require('dotenv').config();
 const indexRouter = require('./routers/indexRouter');
 const authRouter = require('./routers/authRouter');
 const fileRouter = require('./routers/fileRouter');
+const folderRouter = require('./routers/folderRouter');
 
 const app = express();
 
@@ -46,10 +47,13 @@ configurePassport(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-// routes
-app.use('/', indexRouter);
+// routes 
+
 app.use('/', authRouter);
 app.use('/', fileRouter);
+app.use('/', folderRouter);
+app.use('/', indexRouter); // order so auth/file/folder routes are available before the generic home
+
 
 //  404 handler
 app.use((req, res, next) => {

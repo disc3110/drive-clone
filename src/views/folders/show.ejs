@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="max-w-4xl mx-auto px-4 py-10">
+      <div class="flex items-center justify-between mb-4">
+        <div>
+          <h1 class="text-2xl font-semibold"><%= folder.name %></h1>
+          <p class="text-xs text-slate-400 mt-1">
+            Created <%= folder.createdAt.toISOString().slice(0,10) %>
+          </p>
+        </div>
+        <form action="/folders/<%= folder.id %>/delete" method="POST">
+          <button
+            class="rounded-md bg-red-500/80 hover:bg-red-500 px-3 py-1.5 text-xs font-medium"
+            type="submit"
+          >
+            Delete folder
+          </button>
+        </form>
+      </div>
+
+      <div class="mb-6">
+        <a
+          href="/upload?folderId=<%= folder.id %>"
+          class="inline-flex items-center rounded-md bg-indigo-500 hover:bg-indigo-400 px-4 py-2 text-sm font-medium"
+        >
+          Upload file to this folder
+        </a>
+      </div>
+
+      <h2 class="text-lg font-semibold mb-2">Files</h2>
+
+      <% if (folder.files && folder.files.length) { %>
+        <ul class="space-y-2">
+          <% folder.files.forEach(file => { %>
+            <li class="flex items-center justify-between rounded-md bg-slate-900/60 border border-slate-800 px-4 py-2 text-sm">
+              <span>
+                <%= file.name || file.originalName %>
+                <span class="text-xs text-slate-400">
+                  (<%= (file.size / 1024).toFixed(1) %> KB)
+                </span>
+              </span>
+              <!-- download link will be added in a later step -->
+            </li>
+          <% }) %>
+        </ul>
+      <% } else { %>
+        <p class="text-sm text-slate-400">This folder has no files yet.</p>
+      <% } %>
+    </main>
+  </body>
+</html>

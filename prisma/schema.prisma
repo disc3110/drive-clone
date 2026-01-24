@@ -16,7 +16,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  files     File[]   // 👈 relation
+  files     File[]
+  folders   Folder[]   // 👈
 }
 
 model Session {
@@ -28,9 +29,9 @@ model Session {
 
 model File {
   id           String   @id @default(cuid())
-  name         String?  // user-provided
-  originalName String   // original filename from upload
-  filename     String   // stored filename on disk
+  name         String?
+  originalName String
+  filename     String
   mimeType     String
   size         Int
   path         String
@@ -38,4 +39,19 @@ model File {
 
   owner        User     @relation(fields: [ownerId], references: [id])
   ownerId      String
+
+  folder       Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId     String?
+}
+
+model Folder {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  owner     User   @relation(fields: [ownerId], references: [id])
+  ownerId   String
+
+  files     File[]
 }

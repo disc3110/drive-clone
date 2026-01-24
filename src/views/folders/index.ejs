@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="min-h-screen bg-slate-950 text-slate-100">
+    <main class="max-w-4xl mx-auto px-4 py-10">
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="text-2xl font-semibold">Your folders</h1>
+        <a
+          href="/folders/new"
+          class="rounded-md bg-indigo-500 hover:bg-indigo-400 px-4 py-2 text-sm font-medium"
+        >
+          New folder
+        </a>
+      </div>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <% if (folders && folders.length) { %>
+          <% folders.forEach(folder => { %>
+            <a
+              href="/folders/<%= folder.id %>"
+              class="block rounded-lg border border-slate-800 bg-slate-900/60 px-4 py-3 hover:border-indigo-500"
+            >
+              <div class="font-medium"><%= folder.name %></div>
+              <div class="text-xs text-slate-400">
+                Created <%= folder.createdAt.toISOString().slice(0,10) %>
+              </div>
+            </a>
+          <% }) %>
+        <% } else { %>
+          <p class="text-sm text-slate-400 col-span-full">
+            No folders yet.
+          </p>
+        <% } %>
+      </div>
+    </main>
+  </body>
+</html>
