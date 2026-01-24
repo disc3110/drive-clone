@@ -26,7 +26,7 @@
 
       <div class="mb-6">
         <a
-          href="/upload?folderId=<%= folder.id %>"
+          href="/files/upload?folderId=<%= folder.id %>"
           class="inline-flex items-center rounded-md bg-indigo-500 hover:bg-indigo-400 px-4 py-2 text-sm font-medium"
         >
           Upload file to this folder
@@ -40,12 +40,14 @@
           <% folder.files.forEach(file => { %>
             <li class="flex items-center justify-between rounded-md bg-slate-900/60 border border-slate-800 px-4 py-2 text-sm">
               <span>
+                <a href="/files/<%= file.id %>" class="hover:underline">
                 <%= file.name || file.originalName %>
-                <span class="text-xs text-slate-400">
-                  (<%= (file.size / 1024).toFixed(1) %> KB)
-                </span>
+                  <span class="text-xs text-slate-400">
+                    (<%= (file.size / 1024).toFixed(1) %> KB)
+                  </span>
+                </a>
               </span>
-              <!-- download link will be added in a later step -->
+            
             </li>
           <% }) %>
         </ul>

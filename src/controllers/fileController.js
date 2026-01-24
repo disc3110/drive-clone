@@ -1,3 +1,5 @@
+const fs = require('fs');
+const path = require('path');
 const { validationResult } = require('express-validator');
 const prisma = require('../config/prismaClient');
 
@@ -83,7 +85,85 @@ const postUpload = async (req, res) => {
   }
 };
 
+// GET /files/:id 
+const showFile = async (req, res) => {
+  const fileId = req.params.id;
+
+  try {
+    const file = await prisma.file.findFirst({
+      where: {
+        id: fileId,
+        ownerId: req.user.id, // make sure file belongs to logged-in user
+      },
+      include: {
+        folder: true,
+      },
+    });
+
+    if (!file) {
+      return res.status(404).render('404', {
+        title: 'File not found',
+        user: req.user || null,
+      });
+    }
+
+    res.render('files/show', {
+      title: file.name || file.originalName,
+      user: req.user || null,
+      file,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('404', {
+      title: 'File not found',
+      user: req.user || null,
+    });
+  }
+};
+
+// GET /files/:id/download
+const downloadFile = async (req, res) => {
+  const fileId = req.params.id;
+
+  try {
+    const file = await prisma.file.findFirst({
+      where: {
+        id: fileId,
+        ownerId: req.user.id,
+      },
+    });
+
+    if (!file) {
+      return res.status(404).render('404', {
+        title: 'File not found',
+        user: req.user || null,
+      });
+    }
+
+    // check the file still exists
+    if (!fs.existsSync(file.path)) {
+      return res.status(410).render('files/show', {
+        title: file.name || file.originalName,
+        user: req.user || null,
+        file,
+        errors: [{ msg: 'File is no longer available on the server.' }],
+      });
+    }
+
+    // res.download will set correct headers and send the file
+    return res.download(file.path, file.originalName);
+  } catch (err) {
+    console.error(err);
+    res.status(500).render('404', {
+      title: 'File not found',
+      user: req.user || null,
+    });
+  }
+};
+
 module.exports = {
   getUploadForm,
   postUpload,
+  showFile,
+  downloadFile,
 };

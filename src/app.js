@@ -50,7 +50,7 @@ app.use(passport.session());
 // routes 
 
 app.use('/', authRouter);
-app.use('/', fileRouter);
+app.use('/files', fileRouter);
 app.use('/', folderRouter);
 app.use('/', indexRouter); // order so auth/file/folder routes are available before the generic home
 
