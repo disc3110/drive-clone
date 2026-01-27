@@ -56,6 +56,7 @@ const postNewFolder = async (req, res) => {
     },
   });
 
+  req.flash('success', 'Folder created.');
   res.redirect('/folders');
 };
 
@@ -78,6 +79,7 @@ const showFolder = async (req, res) => {
     title: folder.name,
     user: req.user,
     folder,
+    query: req.query, // 👈 pass ?share=...
   });
 };
 
@@ -89,6 +91,7 @@ const deleteFolder = async (req, res) => {
     where: { id: folderId, ownerId: req.user.id },
   });
 
+  req.flash('success', 'Folder deleted.');
   res.redirect('/folders');
 };
 

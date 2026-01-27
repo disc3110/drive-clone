@@ -86,10 +86,13 @@ const postUpload = async (req, res) => {
       },
     });
 
+    req.flash('success', 'File uploaded successfully.');
+
     if (folder) {
       return res.redirect(`/folders/${folder.id}`);
     }
-    res.redirect('/');
+
+    return res.redirect('/');
   } catch (err) {
     console.error(err);
     return res.status(500).render('upload', {

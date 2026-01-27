@@ -7,6 +7,21 @@
   </head>
   <body class="min-h-screen flex items-center justify-center bg-slate-950 text-slate-100">
     <div class="w-full max-w-md bg-slate-900/70 border border-slate-800 rounded-xl p-6 shadow">
+      <% if (errorMessages && errorMessages.length) { %>
+        <div class="mb-4 rounded-md bg-red-500/10 border border-red-500/40 px-3 py-2 text-sm text-red-200">
+          <% errorMessages.forEach(msg => { %>
+            <p><%= msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <% if (successMessages && successMessages.length) { %>
+        <div class="mb-4 rounded-md bg-emerald-500/10 border border-emerald-500/40 px-3 py-2 text-sm text-emerald-200">
+          <% successMessages.forEach(msg => { %>
+            <p><%= msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
       <h1 class="text-2xl font-semibold mb-4 text-center">Log in</h1>
 
       <form action="/login" method="POST" class="space-y-4">

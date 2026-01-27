@@ -27,6 +27,7 @@ const createShareLink = async (req, res) => {
     },
   });
 
+  req.flash('success', 'Share link generated.');
   res.redirect(`/folders/${folder.id}?share=${share.id}`);
 };
 

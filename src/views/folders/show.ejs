@@ -6,52 +6,31 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body class="min-h-screen bg-slate-950 text-slate-100">
+    <%- include('../partials/navbar', { user: user || null }) %>
     <main class="max-w-4xl mx-auto px-4 py-10">
-      <div class="flex items-center justify-between mb-4">
+
+      <% if (errorMessages && errorMessages.length) { %>
+        <div class="mb-4 rounded-md bg-red-500/10 border border-red-500/40 px-3 py-2 text-sm text-red-200">
+          <% errorMessages.forEach(msg => { %>
+            <p><%= msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <% if (successMessages && successMessages.length) { %>
+        <div class="mb-4 rounded-md bg-emerald-500/10 border border-emerald-500/40 px-3 py-2 text-sm text-emerald-200">
+          <% successMessages.forEach(msg => { %>
+            <p><%= msg %></p>
+          <% }) %>
+        </div>
+      <% } %>
+
+      <div class="flex items-start justify-between mb-4">
         <div>
           <h1 class="text-2xl font-semibold"><%= folder.name %></h1>
           <p class="text-xs text-slate-400 mt-1">
             Created <%= folder.createdAt.toISOString().slice(0,10) %>
           </p>
-        </div>
-        <div class="mt-4 rounded-md border border-slate-800 bg-slate-900/60 p-4">
-          <h3 class="text-sm font-semibold mb-2">Share this folder</h3>
-
-          <form
-            action="/folders/<%= folder.id %>/share"
-            method="POST"
-            class="flex gap-2 items-center"
-          >
-            <select
-              name="duration"
-              class="rounded-md bg-slate-900 border border-slate-700 px-2 py-1 text-sm"
-              required
-            >
-              <option value="1">1 day</option>
-              <option value="7">7 days</option>
-              <option value="30">30 days</option>
-            </select>
-
-            <button
-              class="rounded-md bg-indigo-500 hover:bg-indigo-400 px-3 py-1.5 text-sm"
-              type="submit"
-            >
-              Generate link
-            </button>
-          </form>
-
-          <% if (typeof query !== 'undefined' && query.share) { %>
-            <div class="mt-2 text-xs">
-              Share link:
-              <a
-                href="/share/<%= query.share %>"
-                class="underline text-indigo-400"
-                target="_blank"
-              >
-                http://localhost:3000/share/<%= query.share %>
-              </a>
-            </div>
-          <% } %>
         </div>
         <form action="/folders/<%= folder.id %>/delete" method="POST">
           <button
@@ -61,6 +40,62 @@
             Delete folder
           </button>
         </form>
+      </div>
+
+      <div class="mt-2 rounded-md border border-slate-800 bg-slate-900/60 p-4">
+        <h3 class="text-sm font-semibold mb-2">Share this folder</h3>
+
+        <form
+          action="/folders/<%= folder.id %>/share"
+          method="POST"
+          class="flex gap-2 items-center flex-wrap"
+        >
+          <select
+            name="duration"
+            class="rounded-md bg-slate-900 border border-slate-700 px-2 py-1 text-sm"
+            required
+          >
+            <option value="1">1 day</option>
+            <option value="7">7 days</option>
+            <option value="30">30 days</option>
+          </select>
+
+          <button
+            class="rounded-md bg-indigo-500 hover:bg-indigo-400 px-3 py-1.5 text-sm"
+            type="submit"
+          >
+            Generate link
+          </button>
+        </form>
+
+        <% const shareId = (typeof query !== 'undefined' && query.share) ? query.share : null; %>
+        <% if (shareId) { %>
+          <div class="mt-3 space-y-1 text-xs">
+            <p>Share link:</p>
+            <div class="flex gap-2 items-center">
+              <input
+                id="share-link-input"
+                type="text"
+                readonly
+                class="flex-1 rounded-md bg-slate-900 border border-slate-700 px-2 py-1"
+                value="<%= 'http://localhost:3000/share/' + shareId %>"
+              />
+              <button
+                id="copy-share-btn"
+                type="button"
+                class="rounded-md bg-slate-700 hover:bg-slate-600 px-3 py-1 text-xs"
+              >
+                Copy
+              </button>
+            </div>
+            <p
+              id="share-copied"
+              class="text-[11px] text-emerald-400 hidden"
+            >
+              Copied to clipboard!
+            </p>
+          </div>
+        <% } %>
       </div>
 
       <div class="mb-6">
@@ -94,5 +129,24 @@
         <p class="text-sm text-slate-400">This folder has no files yet.</p>
       <% } %>
     </main>
+</main>
+    <script>
+      const copyBtn = document.getElementById('copy-share-btn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', async () => {
+          const input = document.getElementById('share-link-input');
+          const msg = document.getElementById('share-copied');
+
+          try {
+            await navigator.clipboard.writeText(input.value);
+            msg.classList.remove('hidden');
+            setTimeout(() => msg.classList.add('hidden'), 1500);
+          } catch (err) {
+            console.error(err);
+            alert('Could not copy link, please copy it manually.');
+          }
+        });
+      }
+    </script>
   </body>
 </html>

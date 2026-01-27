@@ -4,6 +4,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const passport = require('passport');
 const PrismaSessionStore = require('@quixo3/prisma-session-store').PrismaSessionStore;
+const flash = require('connect-flash');
 const prisma = require('./config/prismaClient');
 const configurePassport = require('./config/passport');
 
@@ -42,6 +43,16 @@ app.use(
     }),
   })
 );
+
+// flash messages
+app.use(flash());
+
+// make flash messages available in all views
+app.use((req, res, next) => {
+  res.locals.successMessages = req.flash('success');
+  res.locals.errorMessages = req.flash('error');
+  next();
+});
 
 // configure passport
 configurePassport(passport);

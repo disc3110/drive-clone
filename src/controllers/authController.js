@@ -38,6 +38,7 @@ const postRegister = async (req, res) => {
       },
     });
 
+    req.flash('success', 'Account created. You can now log in.');
     res.redirect('/login');
   } catch (err) {
     console.error(err);
@@ -56,6 +57,7 @@ const getLogin = (req, res) => {
 const postLogout = (req, res, next) => {
   req.logout(err => {
     if (err) return next(err);
+    req.flash('success', 'You have been logged out.');
     res.redirect('/login');
   });
 };
