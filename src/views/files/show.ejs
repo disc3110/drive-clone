@@ -50,6 +50,19 @@
           </div>
         </dl>
 
+        <% if (file.url) { %>
+          <div class="mt-4 text-sm">
+            <a
+              href="<%= file.url %>"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-indigo-400 hover:text-indigo-300 underline"
+            >
+              Open in browser
+            </a>
+          </div>
+        <% } %>
+
         <% if (typeof errors !== 'undefined' && errors && errors.length) { %>
           <div class="mt-4 space-y-1">
             <% errors.forEach(err => { %>

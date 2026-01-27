@@ -61,8 +61,21 @@ app.use((req, res, next) => {
 });
 
 // error handler
+// error handler
 app.use((err, req, res, next) => {
   console.error(err);
+
+  // Multer file size/type errors → send back to upload page
+  if (err.name === 'MulterError' || err.message === 'Unsupported file type.') {
+    const user = req.user || null;
+    return res.status(400).render('upload', {
+      title: 'Upload file',
+      user,
+      errors: [{ msg: err.message || 'Upload error.' }],
+      folderId: req.body?.folderId || req.query?.folderId || null,
+    });
+  }
+
   res.status(500).send('Server error');
 });
 

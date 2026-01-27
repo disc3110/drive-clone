@@ -37,6 +37,9 @@ model File {
   path         String
   createdAt    DateTime @default(now())
 
+  url          String?  // 👈 cloud storage URL
+  provider     String?  // "cloudinary"
+
   owner        User     @relation(fields: [ownerId], references: [id])
   ownerId      String
 

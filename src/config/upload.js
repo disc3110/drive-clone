@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const multer = require('multer');
 
-// make sure uploads dir exists
 const uploadsDir = path.join(__dirname, '..', '..', 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir);
@@ -19,9 +18,19 @@ const storage = multer.diskStorage({
   },
 });
 
-// basic file validation 
+// allow only certain extensions / mime types
+const allowedMimeTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'application/pdf',
+  'text/plain',
+];
+
 const fileFilter = (req, file, cb) => {
-  // allow most things for now
+  if (!allowedMimeTypes.includes(file.mimetype)) {
+    return cb(new Error('Unsupported file type.'), false);
+  }
   cb(null, true);
 };
 
@@ -29,7 +38,7 @@ const upload = multer({
   storage,
   fileFilter,
   limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB max
+    fileSize: 10 * 1024 * 1024, // 10 MB
   },
 });
 
