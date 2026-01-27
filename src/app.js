@@ -14,6 +14,7 @@ const indexRouter = require('./routers/indexRouter');
 const authRouter = require('./routers/authRouter');
 const fileRouter = require('./routers/fileRouter');
 const folderRouter = require('./routers/folderRouter');
+const shareRouter = require('./routers/shareRouter');
 
 const app = express();
 
@@ -52,6 +53,7 @@ app.use(passport.session());
 app.use('/', authRouter);
 app.use('/files', fileRouter);
 app.use('/', folderRouter);
+app.use('/', shareRouter);
 app.use('/', indexRouter); // order so auth/file/folder routes are available before the generic home
 
 

@@ -57,4 +57,14 @@ model Folder {
   ownerId   String
 
   files     File[]
+  shares    SharedFolder[]
+}
+
+model SharedFolder {
+  id        String   @id @default(uuid())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  folder    Folder  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  folderId  String
 }
